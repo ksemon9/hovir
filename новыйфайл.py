@@ -3,6 +3,8 @@ import uuid
 import json
 import os
 import base64
+import signal
+import sys
 from datetime import datetime
 from flask import Flask, render_template_string, request, redirect, url_for, session
 from flask_socketio import SocketIO, emit, join_room, leave_room
@@ -11,7 +13,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
 socketio = SocketIO(app, async_mode='threading')
 
-DATA_FILE = 'data.json'
+# ------------------ НАСТРОЙКА ПОСТОЯННОГО ХРАНИЛИЩА ------------------
+DATA_DIR = '/data'                     # Папка постоянного диска на Render
+os.makedirs(DATA_DIR, exist_ok=True)   # Создаём, если нет
+DATA_FILE = os.path.join(DATA_DIR, 'data.json')
 
 def load_data():
     if not os.path.exists(DATA_FILE):
@@ -103,7 +108,16 @@ def broadcast_status(user_id, status):
                               {'user_id': user_id, 'username': username, 'status': status},
                               to=str(room['id']))
 
-# ------------------ ШАБЛОНЫ ------------------
+# ------------------ GRACEFUL SHUTDOWN ------------------
+def shutdown_signal_handler(signum, frame):
+    print(f"Получен сигнал {signum}, сохраняем данные...")
+    save_data()
+    sys.exit(0)
+
+signal.signal(signal.SIGTERM, shutdown_signal_handler)
+signal.signal(signal.SIGINT, shutdown_signal_handler)
+
+# ------------------ ШАБЛОНЫ (без изменений) ------------------
 LOGIN_TEMPLATE = '''
 <!DOCTYPE html>
 <html>
