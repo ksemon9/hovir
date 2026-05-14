@@ -325,7 +325,7 @@ REGISTER_TEMPLATE = '''
 </html>
 '''
 
-# ------------------ ШАБЛОН ЧАТА (ПОЛНЫЙ, СОВРЕМЕННЫЙ) ------------------
+# ------------------ ШАБЛОН ЧАТА (С ИСПРАВЛЕННЫМИ СТИЛЯМИ ДЛЯ ДЛИННЫХ ИМЁН) ------------------
 CHAT_TEMPLATE = '''
 <!DOCTYPE html>
 <html>
@@ -364,6 +364,43 @@ CHAT_TEMPLATE = '''
             --primary: #ff9f4a;
         }
         body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: all 0.3s; }
+        
+        /* ========== ИСПРАВЛЕНИЯ ДЛЯ ДЛИННЫХ НИКОВ ========== */
+        .user-name span,
+        .room-item,
+        .message-user,
+        .chat-header span:first-child {
+            max-width: 180px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .room-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .room-item .dm-status-badge {
+            flex-shrink: 0;
+        }
+        .user-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            max-width: 70%;
+        }
+        /* Адаптация под мобильные экраны */
+        @media (max-width: 768px) {
+            .sidebar { width: 240px; }
+            .user-name span { max-width: 120px; }
+            .room-item { max-width: 100%; }
+        }
+        /* ================================================ */
+        
         .sidebar { width: 280px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
         .sidebar-header { padding: 16px; background: var(--primary); color: white; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
         .sidebar-header::before { content: "🌼"; font-size: 1.6rem; animation: spin 8s linear infinite; }
@@ -372,25 +409,25 @@ CHAT_TEMPLATE = '''
         .view-switch button { flex:1; padding:8px; border:none; border-radius:6px; background:var(--input-bg); color:var(--text); cursor:pointer; }
         .view-switch button.active { background: var(--primary); color:white; }
         .room-list { list-style:none; flex:1; overflow-y:auto; padding:8px 0; }
-        .room-item { padding:10px 16px; margin:2px 8px; border-radius:10px; cursor:pointer; transition:0.2s; display:flex; align-items:center; gap:10px; }
+        .room-item { padding:10px 16px; margin:2px 8px; border-radius:10px; cursor:pointer; transition:0.2s; }
         .room-item:hover { background: var(--input-bg); transform:translateX(3px); }
         .room-item.active { background: var(--primary); color:white; font-weight:600; }
         .sidebar-buttons { padding:8px; border-top:1px solid var(--border); display:flex; gap:4px; }
         .sidebar-buttons button { flex:1; background: var(--primary); border:none; color:white; padding:8px; border-radius:8px; cursor:pointer; }
         .user-info { padding:12px 16px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
         .user-name { display:flex; align-items:center; gap:6px; }
-        .user-avatar { width:32px; height:32px; border-radius:50%; object-fit:cover; background: var(--primary); }
+        .user-avatar { width:32px; height:32px; border-radius:50%; object-fit:cover; background: var(--primary); flex-shrink:0; }
         .status-select { background: var(--input-bg); color: var(--text); border:1px solid var(--border); border-radius:12px; padding:4px 8px; font-size:0.75rem; }
         .chat-area { flex:1; display:flex; flex-direction:column; height:100%; overflow:hidden; }
         .chat-header { padding:12px 20px; background: var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
         .subroom-selector { background: var(--input-bg); border:1px solid var(--border); border-radius:20px; padding:6px 12px; color:var(--text); }
         .chat-content { flex:1; overflow-y:auto; padding:16px; }
         .messages { display:flex; flex-direction:column; gap:12px; }
-        .message { max-width:75%; padding:10px 14px; border-radius:18px; background: var(--msg-bg); align-self:flex-start; position:relative; animation: slideDown 0.2s ease; }
+        .message { max-width:75%; padding:10px 14px; border-radius:18px; background: var(--msg-bg); align-self:flex-start; position:relative; animation: slideDown 0.2s ease; word-wrap: break-word; }
         @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
-        .message-header { display:flex; align-items:center; gap:8px; font-size:0.85rem; }
+        .message-header { display:flex; align-items:center; gap:8px; font-size:0.85rem; flex-wrap:wrap; }
         .message-user { font-weight:700; color: var(--primary); cursor:pointer; display:flex; align-items:center; gap:5px; }
-        .message-time { color:#81c784; font-size:0.75rem; }
+        .message-time { color:#81c784; font-size:0.75rem; flex-shrink:0; }
         .message-image { max-width:100%; max-height:300px; border-radius:12px; margin-top:6px; cursor:pointer; }
         .delete-msg { position:absolute; right:8px; top:8px; background:none; border:none; color:var(--danger); cursor:pointer; opacity:0; transition:0.2s; }
         .message:hover .delete-msg { opacity:1; }
@@ -409,10 +446,19 @@ CHAT_TEMPLATE = '''
         .btn-primary { background: var(--primary); color:white; border:none; padding:10px 24px; border-radius:24px; cursor:pointer; }
         .btn-cancel { background:#aaa; color:white; border:none; padding:10px 24px; border-radius:24px; cursor:pointer; }
         .modal-actions { display:flex; gap:12px; margin-top:24px; justify-content:flex-end; }
-        .status-badge { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; }
+        .status-badge { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; flex-shrink:0; }
         .status-online { background-color:#2ecc71; }
         .status-offline { background-color:#7f8c8d; }
         .loading-indicator { text-align:center; padding:10px; color: var(--primary); display:none; }
+        .role-badge { font-size:0.7rem; padding:2px 6px; border-radius:12px; background: var(--primary); color:white; margin-left:6px; }
+        .user-list-item { display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid var(--border); }
+        .role-select { width:130px; padding:4px; background: var(--input-bg); color: var(--text); border-radius:8px; }
+        .avatar-preview { width:100px; height:100px; border-radius:50%; cursor:pointer; object-fit:cover; margin-bottom:10px; }
+        .settings-tabs { display:flex; gap:8px; margin-bottom:20px; }
+        .settings-tab { padding:8px 16px; background: var(--input-bg); border:none; border-radius:20px; cursor:pointer; color:var(--text); }
+        .settings-tab.active { background: var(--primary); color:white; }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
     </style>
 </head>
 <body class="theme-{{ user_theme }}">
@@ -481,7 +527,7 @@ CHAT_TEMPLATE = '''
     <div id="search-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('search-modal')">&times;</span><h2>Поиск каналов</h2><input id="search-query" placeholder="Название или ссылка"><button class="btn-primary" onclick="searchRooms()">Искать</button><div id="search-results"></div></div></div>
     <div id="user-search-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('user-search-modal')">&times;</span><h2>Поиск пользователей</h2><input id="user-search-query"><button class="btn-primary" onclick="searchUsers()">Искать</button><div id="user-search-results"></div></div></div>
     <div id="room-settings-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('room-settings-modal')">&times;</span><h2>Настройки комнаты</h2><label>Название</label><input id="rs-name"><label>Описание</label><textarea id="rs-desc" rows="2"></textarea><label>Приватность</label><select id="rs-private"><option value="0">Публичная</option><option value="1">Приватная</option></select><label>Ссылка</label><input id="rs-link"><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('room-settings-modal')">Отмена</button><button class="btn-primary" onclick="submitRoomSettings()">Сохранить</button></div></div></div>
-    <div id="settings-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('settings-modal')">&times;</span><h2>Настройки</h2><div class="settings-tabs"><button class="settings-tab active" onclick="switchSettingsTab('profile')">👤 Профиль</button><button class="settings-tab" onclick="switchSettingsTab('appearance')">🎨 Внешний вид</button><button class="settings-tab" onclick="switchSettingsTab('help')">❓ Справка</button><button class="settings-tab" onclick="switchSettingsTab('bug')">🐛 Ошибка</button></div><div id="profile-tab" class="tab-content active"><div class="avatar-upload"><img id="settings-avatar-preview" class="avatar-preview" src="{{ user_avatar }}" onclick="document.getElementById('settings-avatar-input').click()" style="width:100px;height:100px;border-radius:50%;cursor:pointer;"><input type="file" id="settings-avatar-input" accept="image/jpeg,image/png,image/gif" style="display:none"></div><label>О себе</label><textarea id="profile-bio" rows="3">{{ user_bio }}</textarea></div><div id="appearance-tab" class="tab-content"><label>Тема</label><select id="profile-theme"><option value="dark">🌙 Тёмная</option><option value="light">☀️ Светлая</option><option value="flower">🌸 Цветочная</option></select><label>Звук уведомлений</label><select id="notification-sound"><option value="on">Вкл</option><option value="off">Выкл</option></select></div><div id="help-tab" class="tab-content"><p>📌 Основные функции: Каналы, подканалы, роли, ЛС, фото.</p></div><div id="bug-tab" class="tab-content"><label>Тема</label><input id="bug-subject"><label>Описание</label><textarea id="bug-description" rows="3"></textarea></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('settings-modal')">Закрыть</button><button class="btn-primary" onclick="saveAllSettings()">Сохранить</button></div></div></div>
+    <div id="settings-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('settings-modal')">&times;</span><h2>Настройки</h2><div class="settings-tabs"><button class="settings-tab active" onclick="switchSettingsTab('profile')">👤 Профиль</button><button class="settings-tab" onclick="switchSettingsTab('appearance')">🎨 Внешний вид</button><button class="settings-tab" onclick="switchSettingsTab('help')">❓ Справка</button><button class="settings-tab" onclick="switchSettingsTab('bug')">🐛 Ошибка</button></div><div id="profile-tab" class="tab-content active"><div class="avatar-upload"><img id="settings-avatar-preview" class="avatar-preview" src="{{ user_avatar }}" onclick="document.getElementById('settings-avatar-input').click()"><input type="file" id="settings-avatar-input" accept="image/jpeg,image/png,image/gif" style="display:none"></div><label>О себе</label><textarea id="profile-bio" rows="3">{{ user_bio }}</textarea></div><div id="appearance-tab" class="tab-content"><label>Тема</label><select id="profile-theme"><option value="dark">🌙 Тёмная</option><option value="light">☀️ Светлая</option><option value="flower">🌸 Цветочная</option></select><label>Звук уведомлений</label><select id="notification-sound"><option value="on">Вкл</option><option value="off">Выкл</option></select></div><div id="help-tab" class="tab-content"><p>📌 Основные функции: Каналы, подканалы, роли, ЛС, фото.</p></div><div id="bug-tab" class="tab-content"><label>Тема</label><input id="bug-subject"><label>Описание</label><textarea id="bug-description" rows="3"></textarea></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('settings-modal')">Закрыть</button><button class="btn-primary" onclick="saveAllSettings()">Сохранить</button></div></div></div>
     <div id="user-profile-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('user-profile-modal')">&times;</span><h2>Профиль пользователя</h2><div id="user-profile-content"></div></div></div>
     <div id="manage-roles-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('manage-roles-modal')">&times;</span><h2>Управление ролями</h2><div id="roles-list"></div></div></div>
     <div id="create-subroom-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('create-subroom-modal')">&times;</span><h2>Создать подканал</h2><label>Название</label><input id="subroom-name"><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('create-subroom-modal')">Отмена</button><button class="btn-primary" onclick="submitCreateSubroom()">Создать</button></div></div></div>
@@ -512,7 +558,7 @@ CHAT_TEMPLATE = '''
         function getStatusIcon(status){ const cls={online:'status-online',offline:'status-offline',away:'status-away',dnd:'status-dnd'}[status]||'status-offline'; return `<span class="status-badge ${cls}"></span>`; }
         function changeStatus(newStatus){ socket.emit('set_status',{status:newStatus}); userStatuses[username]=newStatus; }
         function switchView(view){ currentView=view; document.getElementById('btn-rooms').classList.toggle('active',view==='rooms'); document.getElementById('btn-dm').classList.toggle('active',view==='dm'); document.getElementById('sidebar-buttons-rooms').style.display=view==='rooms'?'flex':'none'; document.getElementById('sidebar-buttons-dm').style.display=view==='dm'?'flex':'none'; if(currentRoomId){ socket.emit('leave',{room_id:currentRoomId}); currentRoomId=null; currentSubroomId=null; } welcomeScreen.style.display='flex'; chatInterface.style.display='none'; roomTitle.textContent='Hovir'; roomSettingsBtn.style.display='none'; manageRolesBtn.style.display='none'; createSubroomBtn.style.display='none'; subroomSelector.style.display='none'; messagesDiv.innerHTML=''; if(view==='rooms') socket.emit('request_room_list'); else if(view==='dm') socket.emit('get_dm_rooms'); }
-        function updateList(rooms){ roomList.innerHTML=''; rooms.forEach(room=>{ const li=document.createElement('li'); li.className='room-item'; li.dataset.roomId=room.id; let icon=''; if(room.type==='group')icon=' 👥'; else if(room.type==='channel')icon=' 📢'; else if(room.type==='dm')icon=' ✉️'; if(room.type==='dm'){ const names=room.name.split(' & '); const partner=names[0]===username?names[1]:names[0]; const statusHtml=getStatusIcon(userStatuses[partner]||'offline'); li.innerHTML=`<span class="dm-status-badge">${statusHtml}</span>${room.name}${icon}`; }else li.textContent=room.name+icon; roomList.appendChild(li); }); document.querySelectorAll('.room-item').forEach(item=>{ item.addEventListener('click',()=>{ document.querySelectorAll('.room-item').forEach(r=>r.classList.remove('active')); item.classList.add('active'); joinRoom(parseInt(item.dataset.roomId)); }); }); }
+        function updateList(rooms){ roomList.innerHTML=''; rooms.forEach(room=>{ const li=document.createElement('li'); li.className='room-item'; li.dataset.roomId=room.id; let icon=''; if(room.type==='group')icon=' 👥'; else if(room.type==='channel')icon=' 📢'; else if(room.type==='dm')icon=' ✉️'; if(room.type==='dm'){ const names=room.name.split(' & '); const partner=names[0]===username?names[1]:names[0]; const statusHtml=getStatusIcon(userStatuses[partner]||'offline'); li.innerHTML=`<span class="dm-status-badge">${statusHtml}</span><span>${room.name}</span>${icon}`; }else li.textContent=room.name+icon; roomList.appendChild(li); }); document.querySelectorAll('.room-item').forEach(item=>{ item.addEventListener('click',()=>{ document.querySelectorAll('.room-item').forEach(r=>r.classList.remove('active')); item.classList.add('active'); joinRoom(parseInt(item.dataset.roomId)); }); }); }
         function joinRoom(roomId){ if(currentRoomId) socket.emit('leave',{room_id:currentRoomId}); currentRoomId=roomId; resetUnreadForRoom(roomId); welcomeScreen.style.display='none'; chatInterface.style.display='flex'; messageTextarea.disabled=false; sendBtn.disabled=false; imageInput.disabled=false; messagesDiv.innerHTML=''; oldestMessageId=null; hasMoreMessages=true; loadingOlder=false; if(messagesContainer){ messagesContainer.removeEventListener('scroll',onChatScroll); messagesContainer.addEventListener('scroll',onChatScroll); } socket.emit('join',{room_id:roomId}); }
         socket.on('room_info',(data)=>{ currentRoomSettings=data; currentSubrooms=data.subrooms||[{id:1,name:'общий'}]; roomTitle.textContent=data.name; if(data.type!=='dm'){ const myRole=data.user_role; manageRolesBtn.style.display=(myRole==='owner'||myRole==='admin')?'inline':'none'; createSubroomBtn.style.display=(myRole==='owner'||myRole==='admin')?'inline':'none'; roomSettingsBtn.style.display=(myRole==='owner')?'inline':'none'; subroomSelector.innerHTML=''; currentSubrooms.forEach(sr=>{ let opt=document.createElement('option'); opt.value=sr.id; opt.textContent=sr.name; subroomSelector.appendChild(opt); }); subroomSelector.style.display='inline-block'; if(currentSubroomId===null&&currentSubrooms.length) currentSubroomId=currentSubrooms[0].id; subroomSelector.value=currentSubroomId; loadMessagesForSubroom(); }else{ const names=data.name.split(' & '); currentDmPartner=names[0]===username?names[1]:names[0]; currentSubroomId=1; loadMessagesForSubroom(); manageRolesBtn.style.display='none'; createSubroomBtn.style.display='none'; subroomSelector.style.display='none'; } });
         function loadMessagesForSubroom(){ if(!currentRoomId||currentSubroomId===null) return; oldestMessageId=null; hasMoreMessages=true; loadingOlder=false; messagesDiv.innerHTML=''; socket.emit('load_subroom_messages',{room_id:currentRoomId,subroom_id:currentSubroomId}); }
@@ -529,7 +575,7 @@ CHAT_TEMPLATE = '''
         messageTextarea.addEventListener('keypress',(e)=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); } });
         messageTextarea.addEventListener('input',autoResizeTextarea);
         function openManageRoles(){ socket.emit('get_room_members',{room_id:currentRoomId}); }
-        socket.on('room_members',(members)=>{ const cont=document.getElementById('roles-list'); cont.innerHTML=''; members.forEach(m=>{ const div=document.createElement('div'); div.className='user-list-item'; div.innerHTML=`<span><strong>${escapeHtml(m.username)}</strong> <span class="role-badge">${m.role}</span></span>`; if((currentRoomSettings.user_role==='owner'||currentRoomSettings.user_role==='admin')&&m.user_id!==currentRoomSettings.creator_id){ const sel=document.createElement('select'); sel.innerHTML=`<option value="member" ${m.role==='member'?'selected':''}>Пользователь</option><option value="moderator" ${m.role==='moderator'?'selected':''}>Модератор</option><option value="admin" ${m.role==='admin'?'selected':''}>Администратор</option>`; sel.onchange=()=>socket.emit('update_user_role',{room_id:currentRoomId,target_user_id:m.user_id,new_role:sel.value}); div.appendChild(sel); } cont.appendChild(div); }); document.getElementById('manage-roles-modal').style.display='block'; });
+        socket.on('room_members',(members)=>{ const cont=document.getElementById('roles-list'); cont.innerHTML=''; members.forEach(m=>{ const div=document.createElement('div'); div.className='user-list-item'; div.innerHTML=`<span><strong>${escapeHtml(m.username)}</strong> <span class="role-badge">${m.role}</span></span>`; if((currentRoomSettings.user_role==='owner'||currentRoomSettings.user_role==='admin')&&m.user_id!==currentRoomSettings.creator_id){ const sel=document.createElement('select'); sel.className='role-select'; sel.innerHTML=`<option value="member" ${m.role==='member'?'selected':''}>Пользователь</option><option value="moderator" ${m.role==='moderator'?'selected':''}>Модератор</option><option value="admin" ${m.role==='admin'?'selected':''}>Администратор</option>`; sel.onchange=()=>socket.emit('update_user_role',{room_id:currentRoomId,target_user_id:m.user_id,new_role:sel.value}); div.appendChild(sel); } cont.appendChild(div); }); document.getElementById('manage-roles-modal').style.display='block'; });
         function openCreateSubroom(){ document.getElementById('subroom-name').value=''; document.getElementById('create-subroom-modal').style.display='block'; }
         function submitCreateSubroom(){ const name=document.getElementById('subroom-name').value.trim(); if(!name) return alert('Введите название'); socket.emit('create_subroom',{room_id:currentRoomId,name:name}); closeModal('create-subroom-modal'); }
         socket.on('subroom_created',(subroom)=>{ currentSubrooms.push(subroom); const opt=document.createElement('option'); opt.value=subroom.id; opt.textContent=subroom.name; subroomSelector.appendChild(opt); subroomSelector.value=subroom.id; currentSubroomId=subroom.id; loadMessagesForSubroom(); });
@@ -658,7 +704,7 @@ def invite(invite_link):
         save_data()
     return redirect(url_for('chat'))
 
-# ------------------ SOCKETIO ОБРАБОТЧИКИ ------------------
+# ------------------ SOCKETIO ОБРАБОТЧИКИ (ПОЛНЫЕ) ------------------
 def get_my_rooms(user_id):
     return [r for r in rooms if r.get('type') != 'dm' and (user_id == r.get('creator_id') or user_id in r.get('members', []))]
 
